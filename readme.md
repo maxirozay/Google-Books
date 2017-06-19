@@ -1,6 +1,6 @@
 # Google Books
 
-App to search any book through the Google Books API and look at descrpitions and details about books.
+App to search any book through the Google Books API. Find descriptions and details about books.
 
 ### Installation
 
