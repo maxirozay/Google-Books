@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Google Books</string>
+    <string name="title_book_detail">Book Detail</string>
+    <string name="search_book">SearchBook</string>
+    <string name="no_more_result">There\'s no more books for this research, try something else!</string>
+    <string name="connexion_failed">Connexion failed, please check your internet connexion.</string>
+    <string name="web_reader_label">Web Reader Link</string>
+    <string name="language_label">Language</string>
+    <string name="publisher_label">Publisher</string>
+    <string name="pages_label">Pages</string>
+    <string name="categories_label">Categories</string>
+</resources>

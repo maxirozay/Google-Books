@@ -1,0 +1,158 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:id="@+id/book_detail"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:textIsSelectable="true"
+    tools:context="com.example.max.googlebooks.view.BookDetailFragment"
+    android:animateLayoutChanges="true" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/coverImage"
+            android:layout_width="128dp"
+            android:layout_height="192dp"
+            android:background="#ddd"
+            android:scaleType="fitXY"
+            android:layout_marginRight="@dimen/text_margin"
+            android:layout_marginEnd="@dimen/text_margin"
+            android:padding="1dp"/>
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TextAppearance.AppCompat.Large"
+            android:layout_toRightOf="@+id/coverImage"
+            android:layout_toEndOf="@id/coverImage"/>
+
+        <TextView
+            android:id="@+id/author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TextAppearance.AppCompat.Medium"
+            android:layout_below="@+id/title"
+            android:layout_alignLeft="@+id/title"
+            android:layout_alignStart="@+id/title"/>
+
+        <TextView
+            android:id="@+id/publishedDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/author"
+            android:layout_alignLeft="@+id/title"
+            android:layout_alignStart="@+id/title"
+            android:layout_marginTop="4dp"/>
+
+        <RatingBar
+            android:id="@+id/ratingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:numStars="5"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_below="@+id/publishedDate"
+            android:layout_alignLeft="@+id/title"
+            android:layout_alignStart="@+id/title"
+            android:layout_marginTop="6dp"/>
+
+        <TextView
+            android:id="@+id/ratingsCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/ratingBar"
+            android:layout_toEndOf="@+id/ratingBar"
+            android:layout_alignTop="@+id/ratingBar"
+            android:layout_marginStart="2dp"
+            android:layout_marginLeft="2dp"
+            android:drawableRight="@drawable/ic_person_grey_16dp"
+            android:drawableEnd="@drawable/ic_person_grey_16dp"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/text_margin"/>
+
+    <TextView
+        android:id="@+id/webReaderLinkLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/web_reader_label"
+        android:layout_marginTop="@dimen/text_margin"
+        android:textStyle="bold"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/webReaderLink"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:autoLink="web"/>
+
+    <TextView
+        android:id="@+id/languageLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/language_label"
+        android:layout_marginTop="@dimen/text_margin"
+        android:textStyle="bold"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/language"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/publisherLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/publisher_label"
+        android:layout_marginTop="@dimen/text_margin"
+        android:textStyle="bold"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/publisher"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/pagesLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/pages_label"
+        android:layout_marginTop="@dimen/text_margin"
+        android:textStyle="bold"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/pages"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/categoriesLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/categories_label"
+        android:layout_marginTop="@dimen/text_margin"
+        android:textStyle="bold"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/categories"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
+</LinearLayout>
