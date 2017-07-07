@@ -6,7 +6,7 @@ import android.support.test.runner.AndroidJUnit4;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 
-import com.example.max.googlebooks.view.BookListActivity;
+import com.example.max.googlebooks.booklist.view.BookListActivity;
 
 import org.junit.Rule;
 import org.junit.Test;

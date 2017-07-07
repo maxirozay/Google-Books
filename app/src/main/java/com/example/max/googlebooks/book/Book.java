@@ -1,10 +1,13 @@
-package com.example.max.googlebooks.model;
+package com.example.max.googlebooks.book;
+
+import android.databinding.BaseObservable;
+import android.databinding.Bindable;
 
 /**
  * Created by max on 6/15/17.
  */
 
-public class Book {
+public class Book extends BaseObservable {
 
     private String kind;
     private String id;
@@ -22,6 +25,7 @@ public class Book {
         this.kind = kind;
     }
 
+    @Bindable
     public String getId() {
         return id;
     }
@@ -54,15 +58,19 @@ public class Book {
         this.volumeInfo = volumeInfo;
     }
 
+    @Bindable
     public String getCoverThumbnailLink(){
-        if (volumeInfo.getImageLinks() != null) return volumeInfo.getImageLinks()
-                .get("smallThumbnail");
+        if (volumeInfo != null && volumeInfo.getImageLinks() != null) {
+            return volumeInfo.getImageLinks().get("smallThumbnail");
+        }
         return null;
     }
 
+    @Bindable
     public String getCoverImageLink(){
-        if (volumeInfo.getImageLinks() != null) return volumeInfo.getImageLinks()
-                .get("smallThumbnail").replace("zoom=5", "zoom=2");
+        if (volumeInfo != null && volumeInfo.getImageLinks() != null) {
+            return volumeInfo.getImageLinks().get("smallThumbnail").replace("zoom=5", "zoom=2");
+        }
         return null;
     }
 

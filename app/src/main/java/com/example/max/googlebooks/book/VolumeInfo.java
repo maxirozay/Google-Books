@@ -1,24 +1,18 @@
-package com.example.max.googlebooks.model;
+package com.example.max.googlebooks.book;
 
-import android.text.Html;
-import android.util.Log;
+import android.databinding.BaseObservable;
+import android.databinding.Bindable;
 
-import com.example.max.googlebooks.data.Util;
+import com.example.max.googlebooks.util.Util;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 /**
  * Created by max on 6/15/17.
  */
 
-public class VolumeInfo {
+public class VolumeInfo extends BaseObservable {
 
     private String title;
     private List<String> authors;
@@ -33,6 +27,7 @@ public class VolumeInfo {
     private int ratingsCount;
     private String language;
 
+    @Bindable
     public String getTitle() {
         return title;
     }
@@ -41,15 +36,20 @@ public class VolumeInfo {
         this.title = title;
     }
 
-    public List<String> getAuthors() {
-        if (authors == null) return new ArrayList<>();
-        return authors;
+    @Bindable
+    public String getAuthors() {
+        if (authors == null) return null;
+        String authorsString = "";
+        for (String author : authors)
+            authorsString += author + ", ";
+        return authorsString.substring(0, authorsString.length() - 2);
     }
 
     public void setAuthors(List<String> authors) {
         this.authors = authors;
     }
 
+    @Bindable
     public String getPublisher() {
         return publisher;
     }
@@ -58,6 +58,7 @@ public class VolumeInfo {
         this.publisher = publisher;
     }
 
+    @Bindable
     public String getPublishedDate() {
         return Util.formatDate(publishedDate);
     }
@@ -66,6 +67,7 @@ public class VolumeInfo {
         this.publishedDate = publishedDate;
     }
 
+    @Bindable
     public String getDescription() {
         if (description == null) return "";
         return Util.htmlToText(description);
@@ -73,6 +75,7 @@ public class VolumeInfo {
 
     public void setDescription(String description) { this.description = description; }
 
+    @Bindable
     public int getPageCount() {
         return pageCount;
     }
@@ -81,6 +84,7 @@ public class VolumeInfo {
         this.pageCount = pageCount;
     }
 
+    @Bindable
     public int getPrintedPageCount() {
         return printedPageCount;
     }
@@ -89,9 +93,13 @@ public class VolumeInfo {
         this.printedPageCount = printedPageCount;
     }
 
-    public List<String> getCategories() {
-        if (categories == null) return new ArrayList<>();
-        return categories;
+    @Bindable
+    public String getCategories() {
+        if (categories == null) return null;
+        String categoriesString = "";
+        for (String category : categories)
+            categoriesString += category + "\n";
+        return categoriesString;
     }
 
     public void setCategories(List<String> categories) {
@@ -106,6 +114,7 @@ public class VolumeInfo {
         this.imageLinks = imageLinks;
     }
 
+    @Bindable
     public float getAverageRating() {
         return averageRating;
     }
@@ -114,6 +123,7 @@ public class VolumeInfo {
         this.averageRating = averageRating;
     }
 
+    @Bindable
     public int getRatingsCount() {
         return ratingsCount;
     }
@@ -122,6 +132,7 @@ public class VolumeInfo {
         this.ratingsCount = ratingsCount;
     }
 
+    @Bindable
     public String getLanguage() {
         return Util.languageCodeToName(language);
     }

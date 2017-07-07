@@ -1,6 +1,6 @@
 package com.example.max.googlebooks;
 
-import com.example.max.googlebooks.data.Util;
+import com.example.max.googlebooks.util.Util;
 
 import org.junit.Test;
 

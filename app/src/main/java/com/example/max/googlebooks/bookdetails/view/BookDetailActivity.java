@@ -1,14 +1,17 @@
-package com.example.max.googlebooks.view;
+package com.example.max.googlebooks.bookdetails.view;
 
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.ActionBar;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.example.max.googlebooks.R;
+import com.example.max.googlebooks.databinding.ActivityBookDetailBinding;
+import com.example.max.googlebooks.booklist.view.BookListActivity;
 
 /**
  * An activity representing a single Book detail screen. This
@@ -18,10 +21,13 @@ import com.example.max.googlebooks.R;
  */
 public class BookDetailActivity extends AppCompatActivity {
 
+    protected ActivityBookDetailBinding binding;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_book_detail);
+        binding = DataBindingUtil
+                .setContentView(this, R.layout.activity_book_detail);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
 
@@ -45,6 +51,10 @@ public class BookDetailActivity extends AppCompatActivity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             BookDetailFragment fragment = new BookDetailFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString(BookDetailFragment.ID,
+                    getIntent().getStringExtra(BookDetailFragment.ID));
+            fragment.setArguments(bundle);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.book_detail_container, fragment)
                     .commit();

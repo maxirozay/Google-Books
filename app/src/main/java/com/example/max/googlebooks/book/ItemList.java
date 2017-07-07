@@ -1,4 +1,4 @@
-package com.example.max.googlebooks.model;
+package com.example.max.googlebooks.book;
 
 import java.util.List;
 

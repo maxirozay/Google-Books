@@ -1,7 +1,7 @@
 package com.example.max.googlebooks.network;
 
-import com.example.max.googlebooks.model.Book;
-import com.example.max.googlebooks.model.ItemList;
+import com.example.max.googlebooks.book.Book;
+import com.example.max.googlebooks.book.ItemList;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

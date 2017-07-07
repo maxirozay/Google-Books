@@ -9,5 +9,5 @@
     android:layout_marginLeft="@dimen/text_margin"
     android:layout_marginRight="@dimen/text_margin"
     app:layoutManager="LinearLayoutManager"
-    tools:context="com.example.max.googlebooks.view.BookListActivity"
+    tools:context="com.example.max.googlebooks.booklist.view.BookListActivity"
     tools:listitem="@layout/book_list_content" />

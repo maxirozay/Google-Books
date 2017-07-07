@@ -1,4 +1,4 @@
-package com.example.max.googlebooks.data;
+package com.example.max.googlebooks.util;
 
 import android.os.Build;
 import android.text.Html;

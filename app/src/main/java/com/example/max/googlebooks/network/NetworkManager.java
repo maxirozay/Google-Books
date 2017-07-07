@@ -1,16 +1,10 @@
 package com.example.max.googlebooks.network;
 
 
-import android.app.ListActivity;
-import android.content.Context;
-
+import com.example.max.googlebooks.ApplicationManager;
 import com.example.max.googlebooks.config.Config;
-import com.example.max.googlebooks.model.Book;
-import com.example.max.googlebooks.model.ItemList;
-import com.example.max.googlebooks.R;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.example.max.googlebooks.book.Book;
+import com.example.max.googlebooks.book.ItemList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -23,39 +17,41 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class NetworkManager {
 
-    private List<Call> calls = new ArrayList<>();
+    private Call call;
+    private static GoogleBooksAPI googleBooksAPI;
 
-    private GoogleBooksAPI buildGoogleBooksAPI() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Config.googleBooksAPI())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        return retrofit.create(GoogleBooksAPI.class);
-
+    public NetworkManager() {
+        if (googleBooksAPI == null) {
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(Config.googleBooksAPI())
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+            googleBooksAPI = retrofit.create(GoogleBooksAPI.class);
+        }
     }
 
-    public void searchBook(Context context, String query, int startIndex, int maxResults,
-                                  Callback callback) {
-        GoogleBooksAPI googleBooksAPI = buildGoogleBooksAPI();
+    public void searchBook(String query,
+                           int startIndex,
+                           int maxResults,
+                           Callback callback) {
         Call<ItemList<Book>> call = googleBooksAPI.searchVolume(
                 query,
                 startIndex,
                 maxResults,
-                context.getString(R.string.apiKey),
-                "items(id,volumeInfo(title,authors,publishedDate,averageRating,ratingsCount," +
-                        "imageLinks/smallThumbnail))");
+                ApplicationManager.config.getApiKey(),
+                "items(id,volumeInfo(title,authors,publishedDate,averageRating,ratingsCount,"
+                        + "imageLinks/smallThumbnail))");
         call.enqueue(callback);
-        calls.add(call);
+        this.call = call;
     }
 
     public void getBookDetails(String id, Callback callback) {
-        GoogleBooksAPI googleBooksAPI = buildGoogleBooksAPI();
         Call<Book> call = googleBooksAPI.getVolumeDetails(id);
         call.enqueue(callback);
-        calls.add(call);
+        this.call = call;
     }
 
-    public void cancelCalls() {
-        for (Call call : calls) call.cancel();
+    public void cancelCall() {
+        if (call != null) call.cancel();
     }
 }

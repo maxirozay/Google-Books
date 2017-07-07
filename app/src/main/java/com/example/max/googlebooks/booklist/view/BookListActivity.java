@@ -1,15 +1,15 @@
-package com.example.max.googlebooks.view;
+package com.example.max.googlebooks.booklist.view;
 
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,17 +20,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.max.googlebooks.booklist.model.EventListener;
 import com.example.max.googlebooks.R;
-import com.example.max.googlebooks.data.Data;
-import com.example.max.googlebooks.model.Book;
-import com.example.max.googlebooks.model.ItemList;
-import com.example.max.googlebooks.network.NetworkManager;
+import com.example.max.googlebooks.bookdetails.view.BookDetailActivity;
+import com.example.max.googlebooks.bookdetails.view.BookDetailFragment;
+import com.example.max.googlebooks.booklist.viewmodel.BookListViewModel;
+import com.example.max.googlebooks.databinding.ActivityBookListBinding;
+import com.example.max.googlebooks.book.Book;
 
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * An activity representing a list of Books. This activity
@@ -40,25 +38,26 @@ import retrofit2.Response;
  * item details. On tablets, the activity presents the list of items and
  * item details side-by-side using two vertical panes.
  */
-public class BookListActivity extends AppCompatActivity {
+public class BookListActivity extends AppCompatActivity implements EventListener {
 
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
      */
     private boolean mTwoPane;
-    private RecyclerView.Adapter adapter;
-    private int startIndex = 0;
-    private int maxResults = 20;
-    private boolean noMoreResult = false;
-    private String query = "";
-    private NetworkManager networkManager = new NetworkManager();
+    public RecyclerView.Adapter adapter;
+    private BookListViewModel viewModel;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_book_list);
+        viewModel = new BookListViewModel();
+        viewModel.setDataListener(this);
+        viewModel.searchBook("book");
+        ActivityBookListBinding binding = DataBindingUtil
+                .setContentView(this, R.layout.activity_book_list);
+        binding.setProgressVisibility(viewModel.progressVisibility);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -77,7 +76,6 @@ public class BookListActivity extends AppCompatActivity {
             mTwoPane = true;
         }
 
-        searchBook("book");
     }
 
     @Override
@@ -98,59 +96,34 @@ public class BookListActivity extends AppCompatActivity {
 
     @Override
     protected void onNewIntent(Intent intent) {
-
         // Get the query from the search intent
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            startIndex = 0;
-            searchBook(intent.getStringExtra(SearchManager.QUERY));
+            viewModel.searchBook(intent.getStringExtra(SearchManager.QUERY));
         }
     }
 
-    // Search a book with the Google Book API
-    private void searchBook(String query){
-        if (startIndex > 0 && noMoreResult) return;
-        else noMoreResult = false;
-
-        findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
-        this.query = query;
-        networkManager.searchBook(this, query, startIndex, maxResults, new Callback<ItemList>() {
-
-            @Override
-            public void onResponse(Call<ItemList> call, Response<ItemList> response) {
-                findViewById(R.id.progressBar).setVisibility(View.GONE);
-                if (response.isSuccessful()) {
-                    if (startIndex == 0) Data.getBooks().clear();
-                    if (response.body().getItems() != null) {
-                        try {
-                            Data.getBooks().addAll(response.body().getItems());
-                        } catch (OutOfMemoryError error) {
-                            Data.getBooks().clear();
-                            Data.getBooks().addAll(response.body().getItems());
-                        }
-                    } else {
-                        Toast.makeText(getApplicationContext(),
-                                getString(R.string.no_more_result),
-                                Toast.LENGTH_LONG).show();
-                        noMoreResult = true;
-                    }
-                    adapter.notifyDataSetChanged();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ItemList> call, Throwable t) {
-                if (!call.isCanceled()) {
-                    findViewById(R.id.progressBar).setVisibility(View.GONE);
-                    Toast.makeText(getApplicationContext(),
-                            getString(R.string.connexion_failed),
-                            Toast.LENGTH_LONG).show();
-                }
-            }
-        });
+    private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
+        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(viewModel.getBooks()));
     }
 
-    private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(Data.getBooks()));
+    @Override
+    public void booksUpdated(List<Book> books) {
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void noMoreBooks(List<Book> books) {
+        adapter.notifyDataSetChanged();
+        Toast.makeText(this,
+                getString(R.string.no_more_result),
+                Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void requestFailed() {
+        Toast.makeText(this,
+                getString(R.string.connexion_failed),
+                Toast.LENGTH_LONG).show();
     }
 
     public class SimpleItemRecyclerViewAdapter
@@ -171,10 +144,7 @@ public class BookListActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, final int position) {
-            if (position == mValues.size() - maxResults) {
-                startIndex = mValues.size();
-                searchBook(query);
-            }
+            if (position == mValues.size() - 10) viewModel.loadMoreBooks();
 
             holder.mItem = mValues.get(position);
             Glide.with(holder.mView.getContext())
@@ -185,18 +155,19 @@ public class BookListActivity extends AppCompatActivity {
 
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v) {
-                    Data.selectedBookPosition = position;
+                public void onClick(View view) {
                     if (mTwoPane) {
                         BookDetailFragment fragment = new BookDetailFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putString(BookDetailFragment.ID, holder.mItem.getId());
+                        fragment.setArguments(bundle);
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.book_detail_container, fragment)
                                 .commit();
                     } else {
-                        Context context = v.getContext();
-                        Intent intent = new Intent(context, BookDetailActivity.class);
-
-                        context.startActivity(intent);
+                        Intent intent = new Intent(getApplicationContext(), BookDetailActivity.class);
+                        intent.putExtra(BookDetailFragment.ID, holder.mItem.getId());
+                        BookListActivity.this.startActivity(intent);
                     }
                 }
             });
@@ -230,6 +201,6 @@ public class BookListActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        networkManager.cancelCalls();
+        viewModel.destroy();
     }
 }
